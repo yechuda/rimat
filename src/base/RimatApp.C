@@ -3,6 +3,7 @@
 #include "AppFactory.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
+#include "ElectricFieldBodyForce.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -45,6 +46,7 @@ extern "C" void RimatApp__registerObjects(Factory & factory) { RimatApp::registe
 void
 RimatApp::registerObjects(Factory & factory)
 {
+  registerKernel(ElectricFieldBodyForce);
 }
 
 // External entry point for dynamic syntax association
