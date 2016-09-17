@@ -116,6 +116,7 @@ libpcre-opt*
 libpcre-dbg*
 libmoose-opt*
 libmoose-dbg*
+librimat-opt*
 
 #doxygen generated
 */doc/doxygen/html/*
@@ -141,6 +142,3 @@ include/base/*Revision.h
 
 # phase_field/tests/solution_rasterizer
 out.xyz
-
-problems/
-tests/
