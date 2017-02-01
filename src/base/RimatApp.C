@@ -4,6 +4,8 @@
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 #include "ElectricFieldBodyForce.h"
+#include "ElectricFieldBodyForceExplicit.h"
+#include "BodyForceDummy.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -47,6 +49,8 @@ void
 RimatApp::registerObjects(Factory & factory)
 {
   registerKernel(ElectricFieldBodyForce);
+  registerKernel(ElectricFieldBodyForceExplicit);
+  registerKernel(BodyForceDummy);
 }
 
 // External entry point for dynamic syntax association
