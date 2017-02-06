@@ -7,8 +7,11 @@
 #include "ElectricFieldBodyForceExplicit.h"
 #include "BodyForceDummy.h"
 #include "ElectricFieldBodyForceExplicitRamp.h"
-#include "INSMomentumBaseLES.h"
-#include "FluidLES.h"
+#include "ApparentDynamicViscosityAux.h"
+// #include "INSMomentumBaseLES.h"
+#include "INSMomentumLaplaceFormLES.h"
+#include "INSMomentumLaplaceFormRZLES.h"
+// #include "FluidLES.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -55,8 +58,11 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(ElectricFieldBodyForceExplicit);
   registerKernel(BodyForceDummy);
   registerKernel(ElectricFieldBodyForceExplicitRamp);
-  registerKernel(INSMomentumBaseLES);
-  registerMaterial(FluidLES);
+  registerAux(ApparentDynamicViscosityAux);
+  // registerKernel(INSMomentumBaseLES);
+  registerKernel(INSMomentumLaplaceFormLES);
+  registerKernel(INSMomentumLaplaceFormRZLES);
+  // registerMaterial(FluidLES);
 }
 
 // External entry point for dynamic syntax association

@@ -17,10 +17,10 @@ InputParameters validParams<INSMomentumBaseLES>()
   params.addCoupledVar("v", 0, "y-velocity"); // only required in 2D and 3D
   params.addCoupledVar("w", 0, "z-velocity"); // only required in 3D
   params.addRequiredCoupledVar("p", "pressure");
+  params.addRequiredCoupledVar("mu", "dynamic viscosity");
 
   // Required parameters
-  // params.addRequiredParam<Real>("mu", "dynamic viscosity");
-  // params.addRequiredParam<Real>("rho", "density");
+  params.addRequiredParam<Real>("rho", "density");
   params.addRequiredParam<RealVectorValue>("gravity", "Direction of the gravity vector");
   params.addRequiredParam<unsigned>("component", "0,1,2 depending on if we are solving the x,y,z component of the momentum equation");
   params.addParam<bool>("integrate_p_by_parts", true, "Allows simulations to be run with pressure BC if set to false");
@@ -38,6 +38,7 @@ INSMomentumBaseLES::INSMomentumBaseLES(const InputParameters & parameters) :
   _v_vel(coupledValue("v")),
   _w_vel(coupledValue("w")),
   _p(coupledValue("p")),
+  _mu(coupledValue("mu")),
 
   // Gradients
   _grad_u_vel(coupledGradient("u")),
@@ -52,15 +53,13 @@ INSMomentumBaseLES::INSMomentumBaseLES(const InputParameters & parameters) :
   _p_var_number(coupled("p")),
 
   // Required parameters
-  // _mu(getParam<Real>("mu")),
-  // _rho(getParam<Real>("rho")),
+  _rho(getParam<Real>("rho")),
   _gravity(getParam<RealVectorValue>("gravity")),
   _component(getParam<unsigned>("component")),
   _integrate_p_by_parts(getParam<bool>("integrate_p_by_parts"))
 
   // Material properties
-  _mu(getMaterialProperty<Real>("mu")),
-  _rho(getMaterialProperty<Real>("rho"))
+  // _dynamic_viscosity(getMaterialProperty<Real>("dynamic_viscosity"))
 {
 }
 

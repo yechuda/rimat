@@ -8,7 +8,6 @@
 #define INSMOMENTUMBASELES_H
 
 #include "Kernel.h"
-#include "MaterialProperty.h"
 
 // Forward Declarations
 class INSMomentumBaseLES;
@@ -51,6 +50,7 @@ protected:
   const VariableValue & _v_vel;
   const VariableValue & _w_vel;
   const VariableValue & _p;
+  const VariableValue & _mu;
 
   // Gradients
   const VariableGradient & _grad_u_vel;
@@ -64,17 +64,14 @@ protected:
   unsigned _w_vel_var_number;
   unsigned _p_var_number;
 
-  // Parameters
+  // Material properties
+  // MaterialProperty<Real> & _dynamic_viscosity;
+  Real _rho;
   RealVectorValue _gravity;
+
+  // Parameters
   unsigned _component;
   bool _integrate_p_by_parts;
-
-  // Material properties
-  MaterialProperty<Real> & _mu;
-  MaterialProperty<Real> & _rho;
-  // Real _mu;
-  // Real _rho;
-
 };
 
 
