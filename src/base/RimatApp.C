@@ -12,6 +12,8 @@
 #include "INSMomentumLaplaceFormLES.h"
 #include "INSMomentumLaplaceFormRZLES.h"
 // #include "FluidLES.h"
+#include "ApparentDynamicViscosityWALEAux.h"
+#include "ElemVolumeAux.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -63,6 +65,8 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumLaplaceFormLES);
   registerKernel(INSMomentumLaplaceFormRZLES);
   // registerMaterial(FluidLES);
+  registerAux(ApparentDynamicViscosityWALEAux);
+  registerAux(ElemVolumeAux);
 }
 
 // External entry point for dynamic syntax association
