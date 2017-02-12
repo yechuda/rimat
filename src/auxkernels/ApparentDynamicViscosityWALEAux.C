@@ -111,7 +111,7 @@ Real ApparentDynamicViscosityWALEAux::computeValue()
 
   Real vol = _current_elem_volume;
   // Real h = _current_elem->hmax();
-  Real h = std::pow(vol, 0.33333333);
+  Real h = 5.0 * std::pow(vol, 0.33333333);
 
   if (_t_step == 1)
     return _mu_mol;

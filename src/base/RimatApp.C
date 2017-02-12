@@ -14,6 +14,8 @@
 // #include "FluidLES.h"
 #include "ApparentDynamicViscosityWALEAux.h"
 #include "ElemVolumeAux.h"
+#include "ApparentDynamicViscosityMLAux.h"
+#include "ApparentDynamicViscosityNikuradseAux.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -67,6 +69,8 @@ RimatApp::registerObjects(Factory & factory)
   // registerMaterial(FluidLES);
   registerAux(ApparentDynamicViscosityWALEAux);
   registerAux(ElemVolumeAux);
+  registerAux(ApparentDynamicViscosityMLAux);
+  registerAux(ApparentDynamicViscosityNikuradseAux);
 }
 
 // External entry point for dynamic syntax association
