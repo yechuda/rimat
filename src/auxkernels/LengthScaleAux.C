@@ -12,36 +12,37 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef APPARENTDYNAMICVISCOSITYWALEAUX_H
-#define APPARENTDYNAMICVISCOSITYWALEAUX_H
-
-#include "AuxKernel.h"
-
-class ApparentDynamicViscosityWALEAux;
+#include "LengthScaleAux.h"
 
 template<>
-InputParameters validParams<ApparentDynamicViscosityWALEAux>();
-
-class ApparentDynamicViscosityWALEAux : public AuxKernel
+InputParameters validParams<LengthScaleAux>()
 {
-public:
-  ApparentDynamicViscosityWALEAux(const InputParameters & parameters);
+  InputParameters params = validParams<AuxKernel>();
 
-  virtual ~ApparentDynamicViscosityWALEAux() {}
+  params.addRequiredParam<Real>("D", "pipe density");
 
-protected:
+  return params;
+}
 
-  virtual Real computeValue();
+LengthScaleAux::LengthScaleAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
 
-  // Coupled variables
-  const VariableGradient & _grad_u_old;
-  const VariableGradient & _grad_v_old;
-  const VariableGradient & _grad_w_old;
+    _D(getParam<Real>("D"))
 
-  // Required parameters
-  Real _mu_mol;
-  Real _rho;
-  Real _D;
-};
+{
+}
 
-#endif //APPARENTDYNAMICVISCOSITYWALEAUX_H
+Real LengthScaleAux::computeValue()
+{
+  Real r = _q_point[_qp](0);
+  Real R = _D / 2.0;
+
+  if (r > R)
+    r = R;
+
+  Real lm_squared;
+
+  lm_squared = std::pow(R, 2.0) * (0.03125 - 0.03125 * std::pow(r / R, 2.0));
+
+  return lm_squared;
+}
