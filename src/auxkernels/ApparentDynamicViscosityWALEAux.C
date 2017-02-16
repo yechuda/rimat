@@ -117,5 +117,28 @@ Real ApparentDynamicViscosityWALEAux::computeValue()
   //  return _mu_mol;
   //else
     return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
+  // Real vol = _current_elem_volume;
+  //Real h = _current_elem->hmax();
+  // Real h = 5.0 * std::pow(vol, 0.33333333);
+
+  //Real r = _q_point[_qp](0);
+  // Real R = _D / 2.0;
+
+  // if (r > R)
+  //  r = R;
+
+  // Real lm_squared;
+  //Real ls;
+
+  //if (_t_step == 1)
+  //  return _mu_mol;
+  //else
+    // return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
+    //ls = 0.2 * std::pow(h, 4.0) * std::pow(r, 2.0) + 40.0 * std::pow(h, 5.0) * r + 100 * std::pow(h, 6.0);
+
+    // lm_squared = std::pow(R, 2.0) * (0.03125 - 0.03125 * std::pow(r / R, 2.0));
+    // lm_squared = 7.62 * h * r;
+    //return _mu_mol + _rho * 29.236 * std::pow(ls, 0.33333333) * OP;
+    // return _mu_mol + _rho * lm_squared * OP;
 
 }

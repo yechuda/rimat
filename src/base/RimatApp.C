@@ -19,6 +19,9 @@
 // #include "INSMomentumBaseWALE.h"
 #include "INSMomentumLaplaceFormWALE.h"
 #include "INSMomentumLaplaceFormRZWALE.h"
+#include "LengthScaleAux.h"
+#include "INSkTransport.h"
+#include "INSepsilonTransport.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -77,6 +80,10 @@ RimatApp::registerObjects(Factory & factory)
   // registerKernel(INSMomentumBaseWALE);
   registerKernel(INSMomentumLaplaceFormWALE);
   registerKernel(INSMomentumLaplaceFormRZWALE);
+  registerAux(LengthScaleAux);
+  registerKernel(INSkTransport);
+  registerKernel(INSepsilonTransport);
+
 }
 
 // External entry point for dynamic syntax association
