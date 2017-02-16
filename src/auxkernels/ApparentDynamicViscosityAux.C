@@ -68,9 +68,9 @@ Real ApparentDynamicViscosityAux::computeValue()
     }
   }
 
-  Real S_mag = std::pow(S_mag_squared, 0.5);
+  Real S_mag = std::pow(2.0 * S_mag_squared, 0.5);
 
-  Real h = _current_elem->hmax();
+  Real h = 4.0 * _current_elem->hmax();
 
   return _mu_mol + _rho * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * S_mag;
 
