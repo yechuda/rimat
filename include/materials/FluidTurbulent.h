@@ -47,6 +47,7 @@ private:
   Real _rho_param;
   Real _Cs;
 
+  const Real & _current_elem_volume;
 };
 
 #endif //FLUIDTURBULENT_H

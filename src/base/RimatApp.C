@@ -11,7 +11,7 @@
 // #include "INSMomentumBaseLES.h"
 #include "INSMomentumLaplaceFormLES.h"
 #include "INSMomentumLaplaceFormRZLES.h"
-// #include "FluidLES.h"
+#include "FluidTurbulent.h"
 #include "ApparentDynamicViscosityWALEAux.h"
 #include "ElemVolumeAux.h"
 #include "ApparentDynamicViscosityMLAux.h"
@@ -22,6 +22,8 @@
 #include "LengthScaleAux.h"
 #include "INSkTransport.h"
 #include "INSepsilonTransport.h"
+#include "INSMomentumLaplaceFormTurbulent.h"
+#include "INSMomentumLaplaceFormRZTurbulent.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -72,7 +74,7 @@ RimatApp::registerObjects(Factory & factory)
   // registerKernel(INSMomentumBaseLES);
   registerKernel(INSMomentumLaplaceFormLES);
   registerKernel(INSMomentumLaplaceFormRZLES);
-  // registerMaterial(FluidLES);
+  registerMaterial(FluidTurbulent);
   registerAux(ApparentDynamicViscosityWALEAux);
   registerAux(ElemVolumeAux);
   registerAux(ApparentDynamicViscosityMLAux);
@@ -83,6 +85,8 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(LengthScaleAux);
   registerKernel(INSkTransport);
   registerKernel(INSepsilonTransport);
+  registerKernel(INSMomentumLaplaceFormTurbulent);
+  registerKernel(INSMomentumLaplaceFormRZTurbulent);
 
 }
 

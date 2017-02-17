@@ -12,12 +12,12 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "ApparentDynamicViscosityWALEAux.h"
+#include "FluidTurbulent.h"
 
 template<>
-InputParameters validParams<ApparentDynamicViscosityWALEAux>()
+InputParameters validParams<FluidTurbulent>()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = validParams<Material>();
 
   // Coupled variables
   params.addRequiredCoupledVar("u", "x-velocity");
@@ -32,46 +32,51 @@ InputParameters validParams<ApparentDynamicViscosityWALEAux>()
   return params;
 }
 
-ApparentDynamicViscosityWALEAux::ApparentDynamicViscosityWALEAux(const InputParameters & parameters) :
-    AuxKernel(parameters),
+FluidTurbulent::FluidTurbulent(const InputParameters & parameters) :
+    Material(parameters),
 
-    // Coupled variables
-    _grad_u_old(coupledGradientOld("u")),
-    _grad_v_old(coupledGradientOld("v")),
-    _grad_w_old(coupledGradientOld("w")),
+    // Declarations
+    _rho(declareProperty<Real>("rho")),
+    _mu(declareProperty<Real>("mu")),
+
+    // Gradients
+    _grad_u(coupledGradient("u")),
+    _grad_v(coupledGradient("v")),
+    _grad_w(coupledGradient("w")),
 
     // Required parameters
     _mu_mol(getParam<Real>("mu_mol")),
-    _rho(getParam<Real>("rho")),
+    _rho_param(getParam<Real>("rho")),
     _Cs(getParam<Real>("Cs"))
+{}
 
+void
+FluidTurbulent::computeQpProperties()
 {
-}
+  _rho[_qp] = _rho_param;
 
-Real ApparentDynamicViscosityWALEAux::computeValue()
-{
   RealTensorValue Sij;
-  Sij(0,0) =            _grad_u_old[_qp](0);
-  Sij(0,1) = Sij(1,0) = 0.5 * (_grad_u_old[_qp](1) + _grad_v_old[_qp](0));
-  Sij(1,1) =            _grad_v_old[_qp](1);
-  Sij(0,2) = Sij(2,0) = 0.5 * (_grad_u_old[_qp](2) + _grad_w_old[_qp](0));
-  Sij(1,2) = Sij(2,1) = 0.5 * (_grad_v_old[_qp](2) + _grad_w_old[_qp](1));
-  Sij(2,2) =            _grad_w_old[_qp](2);
+  Sij(0,0) =            _grad_u[_qp](0);
+  Sij(0,1) = Sij(1,0) = 0.5 * (_grad_u[_qp](1) + _grad_v[_qp](0));
+  Sij(1,1) =            _grad_v[_qp](1);
+  Sij(0,2) = Sij(2,0) = 0.5 * (_grad_u[_qp](2) + _grad_w[_qp](0));
+  Sij(1,2) = Sij(2,1) = 0.5 * (_grad_v[_qp](2) + _grad_w[_qp](1));
+  Sij(2,2) =            _grad_w[_qp](2);
 
   Real SijSij = Sij(0,0) * Sij(0,0) + Sij(0,1) * Sij(1,0) + Sij(0,2) * Sij(2,0) +
                 Sij(1,0) * Sij(0,1) + Sij(1,1) * Sij(1,1) + Sij(1,2) * Sij(2,1) +
                 Sij(2,0) * Sij(0,2) + Sij(2,1) * Sij(1,2) + Sij(2,2) * Sij(2,2);
 
   RealTensorValue gij;
-  gij(0,0) = _grad_u_old[_qp](0);
-  gij(0,1) = _grad_u_old[_qp](1);
-  gij(0,2) = _grad_u_old[_qp](2);
-  gij(1,0) = _grad_v_old[_qp](0);
-  gij(1,1) = _grad_v_old[_qp](1);
-  gij(1,2) = _grad_v_old[_qp](2);
-  gij(2,0) = _grad_w_old[_qp](0);
-  gij(2,1) = _grad_w_old[_qp](1);
-  gij(2,2) = _grad_w_old[_qp](2);
+  gij(0,0) = _grad_u[_qp](0);
+  gij(0,1) = _grad_u[_qp](1);
+  gij(0,2) = _grad_u[_qp](2);
+  gij(1,0) = _grad_v[_qp](0);
+  gij(1,1) = _grad_v[_qp](1);
+  gij(1,2) = _grad_v[_qp](2);
+  gij(2,0) = _grad_w[_qp](0);
+  gij(2,1) = _grad_w[_qp](1);
+  gij(2,2) = _grad_w[_qp](2);
 
   RealTensorValue gij_squared;
   gij_squared(0,0) = gij(0,0) * gij(0,0) + gij(0,1) * gij(1,0) + gij(0,2) * gij(2,0);
@@ -112,26 +117,5 @@ Real ApparentDynamicViscosityWALEAux::computeValue()
   Real vol = _current_elem_volume;
   Real h = 2.0 * std::pow(vol, 0.33333333);
 
-  // if (_t_step == 1)
-  //  return _mu_mol;
-  // else
-
-  return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
-
-  // Real h = _current_elem->hmax();
-  // Real r = _q_point[_qp](0);
-  // Real R = _D / 2.0;
-
-  // if (r > R)
-  //   r = R;
-
-  // Real lm_squared;
-  // Real ls;
-
-  // ls = 0.2 * std::pow(h, 4.0) * std::pow(r, 2.0) + 40.0 * std::pow(h, 5.0) * r + 100 * std::pow(h, 6.0);
-  // lm_squared = std::pow(R, 2.0) * (0.03125 - 0.03125 * std::pow(r / R, 2.0));
-  // lm_squared = 7.62 * h * r;
-  // return _mu_mol + _rho * 29.236 * std::pow(ls, 0.33333333) * OP;
-  // return _mu_mol + _rho * lm_squared * OP;
-
+  _mu[_qp]  = _mu_mol + _rho_param * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
 }
