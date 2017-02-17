@@ -27,7 +27,6 @@ InputParameters validParams<ApparentDynamicViscosityWALEAux>()
   // Required parameters
   params.addRequiredParam<Real>("mu_mol", "molecular dynamic viscosity");
   params.addRequiredParam<Real>("rho", "density");
-  params.addRequiredParam<Real>("D", "pipe diameter");
   params.addRequiredParam<Real>("Cs", "Smagorinsky coefficient");
 
   return params;
@@ -44,7 +43,6 @@ ApparentDynamicViscosityWALEAux::ApparentDynamicViscosityWALEAux(const InputPara
     // Required parameters
     _mu_mol(getParam<Real>("mu_mol")),
     _rho(getParam<Real>("rho")),
-    _D(getParam<Real>("D")),
     _Cs(getParam<Real>("Cs"))
 
 {
@@ -112,28 +110,35 @@ Real ApparentDynamicViscosityWALEAux::computeValue()
   Real OP = std::pow(SdijSdij, 1.5) / (std::pow(SijSij, 2.5) + std::pow(SdijSdij, 1.25));
 
   Real vol = _current_elem_volume;
-  // Real h = 10.0 * _current_elem->hmax();
+  // Real h = _current_elem->hmax();
   Real h = 2.0 * std::pow(vol, 0.33333333);
 
-  // Real r = _q_point[_qp](0);
+  //if (_t_step == 1)
+  //  return _mu_mol;
+  //else
+    return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
+  // Real vol = _current_elem_volume;
+  //Real h = _current_elem->hmax();
+  // Real h = 5.0 * std::pow(vol, 0.33333333);
+
+  //Real r = _q_point[_qp](0);
   // Real R = _D / 2.0;
 
   // if (r > R)
   //  r = R;
 
   // Real lm_squared;
-  // Real ls;
+  //Real ls;
 
   //if (_t_step == 1)
   //  return _mu_mol;
   //else
-    return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
-    // return _mu_mol + _rho * std::pow(h, 2.0) * OP;
-    // ls = 0.1 * std::pow(h, 4.0) * std::pow(r, 2.0) + 30.0 * std::pow(h, 5.0) * r + 20 * std::pow(h, 6.0);
+    // return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
+    //ls = 0.2 * std::pow(h, 4.0) * std::pow(r, 2.0) + 40.0 * std::pow(h, 5.0) * r + 100 * std::pow(h, 6.0);
 
     // lm_squared = std::pow(R, 2.0) * (0.03125 - 0.03125 * std::pow(r / R, 2.0));
     // lm_squared = 7.62 * h * r;
-    // return _mu_mol + _rho * 29.236 * std::pow(ls, 0.33333333) * OP;
+    //return _mu_mol + _rho * 29.236 * std::pow(ls, 0.33333333) * OP;
     // return _mu_mol + _rho * lm_squared * OP;
 
 }

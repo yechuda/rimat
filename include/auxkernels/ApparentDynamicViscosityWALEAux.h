@@ -41,7 +41,6 @@ protected:
   // Required parameters
   Real _mu_mol;
   Real _rho;
-  Real _D;
   Real _Cs;
 };
 

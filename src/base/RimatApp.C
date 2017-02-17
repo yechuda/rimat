@@ -16,9 +16,10 @@
 #include "ElemVolumeAux.h"
 #include "ApparentDynamicViscosityMLAux.h"
 #include "ApparentDynamicViscosityNikuradseAux.h"
+// #include "INSMomentumBaseWALE.h"
+#include "INSMomentumLaplaceFormWALE.h"
+#include "INSMomentumLaplaceFormRZWALE.h"
 #include "LengthScaleAux.h"
-#include "ApparentDynamicViscositySmagorinsky2DAux.h"
-#include "TestAux.h"
 #include "INSkTransport.h"
 #include "INSepsilonTransport.h"
 
@@ -76,11 +77,13 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(ElemVolumeAux);
   registerAux(ApparentDynamicViscosityMLAux);
   registerAux(ApparentDynamicViscosityNikuradseAux);
+  // registerKernel(INSMomentumBaseWALE);
+  registerKernel(INSMomentumLaplaceFormWALE);
+  registerKernel(INSMomentumLaplaceFormRZWALE);
   registerAux(LengthScaleAux);
-  registerAux(ApparentDynamicViscositySmagorinsky2DAux);
-  registerAux(TestAux);
   registerKernel(INSkTransport);
   registerKernel(INSepsilonTransport);
+
 }
 
 // External entry point for dynamic syntax association
