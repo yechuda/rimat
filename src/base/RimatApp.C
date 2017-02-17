@@ -17,6 +17,10 @@
 #include "ApparentDynamicViscosityMLAux.h"
 #include "ApparentDynamicViscosityNikuradseAux.h"
 #include "LengthScaleAux.h"
+#include "ApparentDynamicViscositySmagorinsky2DAux.h"
+#include "TestAux.h"
+#include "INSkTransport.h"
+#include "INSepsilonTransport.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -73,6 +77,10 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(ApparentDynamicViscosityMLAux);
   registerAux(ApparentDynamicViscosityNikuradseAux);
   registerAux(LengthScaleAux);
+  registerAux(ApparentDynamicViscositySmagorinsky2DAux);
+  registerAux(TestAux);
+  registerKernel(INSkTransport);
+  registerKernel(INSepsilonTransport);
 }
 
 // External entry point for dynamic syntax association

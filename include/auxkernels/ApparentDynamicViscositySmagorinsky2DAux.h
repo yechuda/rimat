@@ -12,22 +12,22 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef APPARENTDYNAMICVISCOSITYWALEAUX_H
-#define APPARENTDYNAMICVISCOSITYWALEAUX_H
+#ifndef APPARENTDYNAMICVISCOSITYSMAGORINSKY2DAUX_H
+#define APPARENTDYNAMICVISCOSITYSMAGORINSKY2DAUX_H
 
 #include "AuxKernel.h"
 
-class ApparentDynamicViscosityWALEAux;
+class ApparentDynamicViscositySmagorinsky2DAux;
 
 template<>
-InputParameters validParams<ApparentDynamicViscosityWALEAux>();
+InputParameters validParams<ApparentDynamicViscositySmagorinsky2DAux>();
 
-class ApparentDynamicViscosityWALEAux : public AuxKernel
+class ApparentDynamicViscositySmagorinsky2DAux : public AuxKernel
 {
 public:
-  ApparentDynamicViscosityWALEAux(const InputParameters & parameters);
+  ApparentDynamicViscositySmagorinsky2DAux(const InputParameters & parameters);
 
-  virtual ~ApparentDynamicViscosityWALEAux() {}
+  virtual ~ApparentDynamicViscositySmagorinsky2DAux() {}
 
 protected:
 
@@ -36,13 +36,11 @@ protected:
   // Coupled variables
   const VariableGradient & _grad_u_old;
   const VariableGradient & _grad_v_old;
-  const VariableGradient & _grad_w_old;
 
   // Required parameters
   Real _mu_mol;
   Real _rho;
-  Real _D;
   Real _Cs;
 };
 
-#endif //APPARENTDYNAMICVISCOSITYWALEAUX_H
+#endif //APPARENTDYNAMICVISCOSITYSMAGORINSKY2DAUX_H

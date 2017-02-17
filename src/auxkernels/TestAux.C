@@ -12,43 +12,51 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "ApparentDynamicViscosityNikuradseAux.h"
+#include "TestAux.h"
 
 template<>
-InputParameters validParams<ApparentDynamicViscosityNikuradseAux>()
+InputParameters validParams<TestAux>()
 {
   InputParameters params = validParams<AuxKernel>();
 
   // Coupled variables
+  params.addRequiredCoupledVar("u", "x-velocity");
   params.addRequiredCoupledVar("v", "y-velocity");
 
   // Required parameters
   params.addRequiredParam<Real>("mu_mol", "molecular dynamic viscosity");
   params.addRequiredParam<Real>("rho", "density");
-  params.addRequiredParam<Real>("D", "pipe diameter");
+  params.addRequiredParam<Real>("Cs", "Smagorinsky coefficient");
 
   return params;
 }
 
-ApparentDynamicViscosityNikuradseAux::ApparentDynamicViscosityNikuradseAux(const InputParameters & parameters) :
+TestAux::TestAux(const InputParameters & parameters) :
     AuxKernel(parameters),
 
     // Coupled variables
+    _grad_u_old(coupledGradientOld("u")),
     _grad_v_old(coupledGradientOld("v")),
 
     // Required parameters
     _mu_mol(getParam<Real>("mu_mol")),
     _rho(getParam<Real>("rho")),
-    _D(getParam<Real>("D"))
+    _Cs(getParam<Real>("Cs"))
 
 {
 }
 
-Real ApparentDynamicViscosityNikuradseAux::computeValue()
+Real TestAux::computeValue()
 {
   // Real vol = _current_elem_volume;
   // Real h = std::pow(vol, 0.33333333);
-  Real h = 0.001;
+  // Real h = 0.001;
+  // return _mu_mol + _rho * std::pow(h, 2.0) * std::abs(_grad_v_old[_qp](0));
 
-  return _mu_mol + _rho * std::pow(h, 2.0) * std::abs(_grad_v_old[_qp](0));
+  Real OP_squared = 2.0 * std::pow(_grad_u_old[_qp](0), 2.0) + 2.0 * std::pow(_grad_v_old[_qp](1), 2.0) + std::pow(_grad_u_old[_qp](1) + _grad_v_old[_qp](0), 2.0);
+  Real OP = std::pow(OP, 0.5);
+  Real lm = _Cs * 2.0 * _current_elem->hmax();
+
+  // return _mu_mol + _rho * std::pow(lm, 2.0) * OP;
+  return lm;
 }
