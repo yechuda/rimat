@@ -42,7 +42,9 @@ TestAux::TestAux(const InputParameters & parameters) :
     // Required parameters
     _mu_mol(getParam<Real>("mu_mol")),
     _rho(getParam<Real>("rho")),
-    _Cs(getParam<Real>("Cs"))
+    _Cs(getParam<Real>("Cs")),
+
+    _current_neighbor_volume(_assembly.neighborVolume())
 
 {
 }
@@ -60,5 +62,26 @@ Real TestAux::computeValue()
 
   // return _mu_mol + _rho * std::pow(lm, 2.0) * OP;
   // return _current_elem->neighbor(_current_side);
-  return _assembly.neighborVolume();
+
+  // _assembly.neighborVolume()
+
+  // unsigned int n_flux_faces = 0;
+  Real vol_sum = 0.0;
+  THREAD_ID tid = 0;
+
+  for (unsigned int side=0; side<_current_elem->n_sides(); side++)
+    if (_current_elem->neighbor(side) != NULL)
+      {
+        const Elem * neighbor = _current_elem->neighbor(side);
+        unsigned int neighbor_side = neighbor->which_neighbor_am_i(_current_elem);
+        Assembly as;
+
+        // FEProblemBase::reinitNeighbor(_current_elem, side, tid);
+        as.reinitElemAndNeighbor(_current_elem, side, neighbor, neighbor_side);
+        // n_flux_faces++;
+        // vol_sum += _current_elem->neighbor(side)->elemVolume();
+        // vol_sum += _current_neighbor_volume;
+      }
+
+  return vol_sum;
 }

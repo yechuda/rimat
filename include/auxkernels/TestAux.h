@@ -41,6 +41,8 @@ protected:
   Real _mu_mol;
   Real _rho;
   Real _Cs;
+
+  const Real & _current_neighbor_volume;
 };
 
 #endif //TESTAUX_H
