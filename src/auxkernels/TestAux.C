@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "TestAux.h"
+#include "Assembly.h"
 
 template<>
 InputParameters validParams<TestAux>()
@@ -48,15 +49,16 @@ TestAux::TestAux(const InputParameters & parameters) :
 
 Real TestAux::computeValue()
 {
-  // Real vol = _current_elem_volume;
-  // Real h = std::pow(vol, 0.33333333);
+  Real vol = _current_elem_volume;
+  Real h = std::pow(vol, 0.33333333);
   // Real h = 0.001;
   // return _mu_mol + _rho * std::pow(h, 2.0) * std::abs(_grad_v_old[_qp](0));
 
-  Real OP_squared = 2.0 * std::pow(_grad_u_old[_qp](0), 2.0) + 2.0 * std::pow(_grad_v_old[_qp](1), 2.0) + std::pow(_grad_u_old[_qp](1) + _grad_v_old[_qp](0), 2.0);
-  Real OP = std::pow(OP, 0.5);
-  Real lm = _Cs * 2.0 * _current_elem->hmax();
+  // Real OP_squared = 2.0 * std::pow(_grad_u_old[_qp](0), 2.0) + 2.0 * std::pow(_grad_v_old[_qp](1), 2.0) + std::pow(_grad_u_old[_qp](1) + _grad_v_old[_qp](0), 2.0);
+  // Real OP = std::pow(OP, 0.5);
+  // Real lm = _Cs * 2.0 * _current_elem->hmax();
 
   // return _mu_mol + _rho * std::pow(lm, 2.0) * OP;
-  return lm;
+  // return _current_elem->neighbor(_current_side);
+  return _assembly.neighborVolume();
 }

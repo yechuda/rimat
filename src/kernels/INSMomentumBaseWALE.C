@@ -67,10 +67,10 @@ INSMomentumBaseWALE::INSMomentumBaseWALE(const InputParameters & parameters) :
 
 Real INSMomentumBaseWALE::computeQpDynamicViscosity()
 {
-  if (_t_step == 1)
-    return _mu_mol;
-  else
-  {
+  //if (_t_step == 1)
+  //  return _mu_mol;
+  //else
+  //{
   RealTensorValue Sij;
   Sij(0,0) =            _grad_u_vel[_qp](0);
   Sij(0,1) = Sij(1,0) = 0.5 * (_grad_u_vel[_qp](1) + _grad_v_vel[_qp](0));
@@ -130,13 +130,13 @@ Real INSMomentumBaseWALE::computeQpDynamicViscosity()
 
   Real OP = std::pow(SdijSdij, 1.5) / (std::pow(SijSij, 2.5) + std::pow(SdijSdij, 1.25));
 
-  //Real vol = _current_elem_volume;
-  //Real h = std::pow(vol, 0.33333333);
+  Real vol = _current_elem_volume;
+  Real h = 2.0 * std::pow(vol, 0.33333333);
 
-  Real h = 2.0 * _current_elem->hmax();
+  // Real h = 2.0 * _current_elem->hmax();
 
   return _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
-  }
+  //}
 }
 
 Real INSMomentumBaseWALE::computeQpResidual()

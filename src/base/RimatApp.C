@@ -24,6 +24,9 @@
 #include "INSepsilonTransport.h"
 #include "INSMomentumLaplaceFormTurbulent.h"
 #include "INSMomentumLaplaceFormRZTurbulent.h"
+#include "ApparentDynamicViscosityWALEAverageAux.h"
+#include "SmoothFunction.h"
+#include "TestAux.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -87,6 +90,9 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(INSepsilonTransport);
   registerKernel(INSMomentumLaplaceFormTurbulent);
   registerKernel(INSMomentumLaplaceFormRZTurbulent);
+  registerAux(ApparentDynamicViscosityWALEAverageAux);
+  registerUserObject(SmoothFunction);
+  registerAux(TestAux);
 
 }
 
