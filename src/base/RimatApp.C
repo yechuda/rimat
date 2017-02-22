@@ -33,6 +33,7 @@
 #include "TwoPointsMinInverseDistanceDirichletBC.h"
 #include "WallDistanceAux.h"
 #include "InverseWallDistanceRZ.h"
+#include "InverseWallDistanceGrad.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -105,6 +106,7 @@ RimatApp::registerObjects(Factory & factory)
   registerBoundaryCondition(TwoPointsMinInverseDistanceDirichletBC);
   registerAux(WallDistanceAux);
   registerKernel(InverseWallDistanceRZ);
+  registerKernel(InverseWallDistanceGrad);
 
 }
 
