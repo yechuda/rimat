@@ -67,21 +67,22 @@ Real TestAux::computeValue()
 
   // unsigned int n_flux_faces = 0;
   Real vol_sum = 0.0;
-  THREAD_ID tid = 0;
+  // THREAD_ID tid = 0;
 
   for (unsigned int side=0; side<_current_elem->n_sides(); side++)
+  {
     if (_current_elem->neighbor(side) != NULL)
       {
         const Elem * neighbor = _current_elem->neighbor(side);
         unsigned int neighbor_side = neighbor->which_neighbor_am_i(_current_elem);
-        Assembly as;
 
         // FEProblemBase::reinitNeighbor(_current_elem, side, tid);
-        as.reinitElemAndNeighbor(_current_elem, side, neighbor, neighbor_side);
+        _assembly.reinitElemAndNeighbor(_current_elem, side, neighbor, neighbor_side);
         // n_flux_faces++;
         // vol_sum += _current_elem->neighbor(side)->elemVolume();
         // vol_sum += _current_neighbor_volume;
+        vol_sum += _assembly.neighborVolume();
       }
-
+  }
   return vol_sum;
 }

@@ -13,36 +13,48 @@
 /****************************************************************/
 
 #include "LengthScaleAux.h"
+#include "Assembly.h"
 
 template<>
 InputParameters validParams<LengthScaleAux>()
 {
   InputParameters params = validParams<AuxKernel>();
 
-  params.addRequiredParam<Real>("D", "pipe density");
-
   return params;
 }
 
 LengthScaleAux::LengthScaleAux(const InputParameters & parameters) :
-    AuxKernel(parameters),
-
-    _D(getParam<Real>("D"))
+    AuxKernel(parameters)
 
 {
 }
 
 Real LengthScaleAux::computeValue()
 {
-  Real r = _q_point[_qp](0);
-  Real R = _D / 2.0;
+  Real vol = _current_elem_volume;
+  Real h_current = 2.0 * std::pow(vol, 1.0 / 3.0);
 
-  if (r > R)
-    r = R;
+  Real h_neighbor_sum = 0.0;
+  unsigned int n_faces = 0;
 
-  Real lm_squared;
+  for (unsigned int side=0; side<_current_elem->n_sides(); side++)
+  {
+    if (_current_elem->neighbor(side) != NULL)
+      {
+        Real neighbor_vol = 0.0;
 
-  lm_squared = std::pow(R, 2.0) * (0.03125 - 0.03125 * std::pow(r / R, 2.0));
+        n_faces++;
 
-  return lm_squared;
+        const Elem * neighbor = _current_elem->neighbor(side);
+        unsigned int neighbor_side = neighbor->which_neighbor_am_i(_current_elem);
+
+        _assembly.reinitElemAndNeighbor(_current_elem, side, neighbor, neighbor_side);
+
+        neighbor_vol = _assembly.neighborVolume();
+
+        h_neighbor_sum += 2.0 * std::pow(neighbor_vol, 1.0 / 3.0);
+      }
+  }
+
+  return (h_current + h_neighbor_sum) / (n_faces + 1.0);
 }

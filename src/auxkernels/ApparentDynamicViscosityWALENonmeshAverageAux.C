@@ -12,10 +12,10 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "ApparentDynamicViscosityWALEAverageAux.h"
+#include "ApparentDynamicViscosityWALENonmeshAverageAux.h"
 
 template<>
-InputParameters validParams<ApparentDynamicViscosityWALEAverageAux>()
+InputParameters validParams<ApparentDynamicViscosityWALENonmeshAverageAux>()
 {
   InputParameters params = validParams<AuxKernel>();
 
@@ -23,29 +23,29 @@ InputParameters validParams<ApparentDynamicViscosityWALEAverageAux>()
   params.addRequiredCoupledVar("u", "x-velocity");
   params.addCoupledVar("v", 0, "y-velocity"); // only required in 2D and 3D
   params.addCoupledVar("w", 0, "z-velocity"); // only required in 3D
-  params.addRequiredCoupledVar("length_scale", "length scale");
 
   // Required parameters
   params.addRequiredParam<Real>("mu_mol", "molecular dynamic viscosity");
   params.addRequiredParam<Real>("rho", "density");
   params.addRequiredParam<Real>("Cs", "Smagorinsky coefficient");
+  params.addRequiredParam<Real>("delta", "length parameter");
 
   return params;
 }
 
-ApparentDynamicViscosityWALEAverageAux::ApparentDynamicViscosityWALEAverageAux(const InputParameters & parameters) :
+ApparentDynamicViscosityWALENonmeshAverageAux::ApparentDynamicViscosityWALENonmeshAverageAux(const InputParameters & parameters) :
     AuxKernel(parameters),
 
     // Coupled variables
     _grad_u_old(coupledGradientOld("u")),
     _grad_v_old(coupledGradientOld("v")),
     _grad_w_old(coupledGradientOld("w")),
-    _length_scale(coupledValue("length_scale")),
 
     // Required parameters
     _mu_mol(getParam<Real>("mu_mol")),
     _rho(getParam<Real>("rho")),
     _Cs(getParam<Real>("Cs")),
+    _delta(getParam<Real>("delta")),
 
     // Old values
     _mu_old(valueOld())
@@ -53,7 +53,7 @@ ApparentDynamicViscosityWALEAverageAux::ApparentDynamicViscosityWALEAverageAux(c
 {
 }
 
-Real ApparentDynamicViscosityWALEAverageAux::computeValue()
+Real ApparentDynamicViscosityWALENonmeshAverageAux::computeValue()
 {
   RealTensorValue Sij;
   Sij(0,0) =            _grad_u_old[_qp](0);
@@ -117,12 +117,16 @@ Real ApparentDynamicViscosityWALEAverageAux::computeValue()
   // Real vol = _current_elem_volume;
   // Real h = 2.0 * std::pow(vol, 0.33333333);
 
-  Real _mu_new = _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(_length_scale[_qp], 2.0) * OP;
+  Real r = _q_point[_qp](0);
+  Real h_cubed = 2.0 * 3.1415926535 * r * std::pow(_delta, 2.0) + 3.1415926535 * std::pow(_delta, 3.0);
+  Real h = 2.0 * std::pow(h_cubed, 1.0 / 3.0);
 
-  if (_t_step == 1)
+  Real _mu_new = _mu_mol + _rho * 10.6 * std::pow(_Cs, 2.0) * std::pow(h, 2.0) * OP;
+
+  // if (_t_step == 1)
     return _mu_new;
-  else
-    return (_mu_old[_qp] + _mu_new) / 2.0;
+  // else
+    // return (_mu_old[_qp] + _mu_new) / 2.0;
   // else
   //   return (_mu_older[_qp] + _mu_old[_qp] + _mu_new) / 3.0;
 

@@ -12,27 +12,35 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LENGTHSCALEAUX_H
-#define LENGTHSCALEAUX_H
+#ifndef ONEPOINTBOUNDEDINVERSEDISTANCEDIRICHLETBC_H
+#define ONEPOINTBOUNDEDINVERSEDISTANCEDIRICHLETBC_H
 
-#include "AuxKernel.h"
+#include "NodalBC.h"
 
-class LengthScaleAux;
+class OnePointBoundedInverseDistanceDirichletBC;
 
 template<>
-InputParameters validParams<LengthScaleAux>();
+InputParameters validParams<OnePointBoundedInverseDistanceDirichletBC>();
 
-class LengthScaleAux : public AuxKernel
+/**
+ * Boundary condition of a Dirichlet type
+ *
+ * Sets the value in the node
+ */
+class OnePointBoundedInverseDistanceDirichletBC : public NodalBC
 {
 public:
-  LengthScaleAux(const InputParameters & parameters);
-
-  virtual ~LengthScaleAux() {}
+  OnePointBoundedInverseDistanceDirichletBC(const InputParameters & parameters);
 
 protected:
+  virtual Real computeQpResidual() override;
 
-  virtual Real computeValue();
-
+  /// The value for this BC
+  const Real & _ref_point_x;
+  const Real & _ref_point_y;
+  const Real & _ref_point_z;
+  const Real & _max_dist;
+  const Real & _G0;
 };
 
-#endif //LENGTHSCALEAUX_H
+#endif /* ONEPOINTBOUNDEDINVERSEDISTANCEDIRICHLETBC_H */

@@ -27,6 +27,12 @@
 #include "ApparentDynamicViscosityWALEAverageAux.h"
 #include "SmoothFunction.h"
 #include "TestAux.h"
+#include "ApparentDynamicViscosityWALENonmeshAverageAux.h"
+#include "InverseWallDistance.h"
+#include "OnePointBoundedInverseDistanceDirichletBC.h"
+#include "TwoPointsMinInverseDistanceDirichletBC.h"
+#include "WallDistanceAux.h"
+#include "InverseWallDistanceRZ.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -93,6 +99,12 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(ApparentDynamicViscosityWALEAverageAux);
   registerUserObject(SmoothFunction);
   registerAux(TestAux);
+  registerAux(ApparentDynamicViscosityWALENonmeshAverageAux);
+  registerKernel(InverseWallDistance);
+  registerBoundaryCondition(OnePointBoundedInverseDistanceDirichletBC);
+  registerBoundaryCondition(TwoPointsMinInverseDistanceDirichletBC);
+  registerAux(WallDistanceAux);
+  registerKernel(InverseWallDistanceRZ);
 
 }
 

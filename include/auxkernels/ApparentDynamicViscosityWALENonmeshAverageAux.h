@@ -12,27 +12,40 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LENGTHSCALEAUX_H
-#define LENGTHSCALEAUX_H
+#ifndef APPARENTDYNAMICVISCOSITYWALENONMESHAVERAGEAUX_H
+#define APPARENTDYNAMICVISCOSITYWALENONMESHAVERAGEAUX_H
 
 #include "AuxKernel.h"
 
-class LengthScaleAux;
+class ApparentDynamicViscosityWALENonmeshAverageAux;
 
 template<>
-InputParameters validParams<LengthScaleAux>();
+InputParameters validParams<ApparentDynamicViscosityWALENonmeshAverageAux>();
 
-class LengthScaleAux : public AuxKernel
+class ApparentDynamicViscosityWALENonmeshAverageAux : public AuxKernel
 {
 public:
-  LengthScaleAux(const InputParameters & parameters);
+  ApparentDynamicViscosityWALENonmeshAverageAux(const InputParameters & parameters);
 
-  virtual ~LengthScaleAux() {}
+  virtual ~ApparentDynamicViscosityWALENonmeshAverageAux() {}
 
 protected:
 
   virtual Real computeValue();
 
+  // Coupled variables
+  const VariableGradient & _grad_u_old;
+  const VariableGradient & _grad_v_old;
+  const VariableGradient & _grad_w_old;
+
+  // Required parameters
+  Real _mu_mol;
+  Real _rho;
+  Real _Cs;
+  Real _delta;
+
+  // Old value
+  const VariableValue & _mu_old;
 };
 
-#endif //LENGTHSCALEAUX_H
+#endif //APPARENTDYNAMICVISCOSITYWALENONMESHAVERAGEAUX_H

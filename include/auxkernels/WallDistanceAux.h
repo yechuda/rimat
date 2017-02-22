@@ -12,27 +12,32 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LENGTHSCALEAUX_H
-#define LENGTHSCALEAUX_H
+#ifndef WALLDISTANCEAUX_H
+#define WALLDISTANCEAUX_H
 
 #include "AuxKernel.h"
 
-class LengthScaleAux;
+class WallDistanceAux;
 
 template<>
-InputParameters validParams<LengthScaleAux>();
+InputParameters validParams<WallDistanceAux>();
 
-class LengthScaleAux : public AuxKernel
+class WallDistanceAux : public AuxKernel
 {
 public:
-  LengthScaleAux(const InputParameters & parameters);
+  WallDistanceAux(const InputParameters & parameters);
 
-  virtual ~LengthScaleAux() {}
+  virtual ~WallDistanceAux() {}
 
 protected:
 
   virtual Real computeValue();
 
+  // Coupled variables
+  const VariableValue & _G;
+
+  // Required parameters
+  Real _G0;
 };
 
-#endif //LENGTHSCALEAUX_H
+#endif //WALLDISTANCEAUX_H

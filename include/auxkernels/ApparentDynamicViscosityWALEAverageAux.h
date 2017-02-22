@@ -37,6 +37,7 @@ protected:
   const VariableGradient & _grad_u_old;
   const VariableGradient & _grad_v_old;
   const VariableGradient & _grad_w_old;
+  const VariableValue & _length_scale;
 
   // Required parameters
   Real _mu_mol;

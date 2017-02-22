@@ -12,27 +12,37 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LENGTHSCALEAUX_H
-#define LENGTHSCALEAUX_H
+#ifndef TWOPOINTSMININVERSEDISTANCEDIRICHLETBC_H
+#define TWOPOINTSMININVERSEDISTANCEDIRICHLETBC_H
 
-#include "AuxKernel.h"
+#include "NodalBC.h"
 
-class LengthScaleAux;
+class TwoPointsMinInverseDistanceDirichletBC;
 
 template<>
-InputParameters validParams<LengthScaleAux>();
+InputParameters validParams<TwoPointsMinInverseDistanceDirichletBC>();
 
-class LengthScaleAux : public AuxKernel
+/**
+ * Boundary condition of a Dirichlet type
+ *
+ * Sets the value in the node
+ */
+class TwoPointsMinInverseDistanceDirichletBC : public NodalBC
 {
 public:
-  LengthScaleAux(const InputParameters & parameters);
-
-  virtual ~LengthScaleAux() {}
+  TwoPointsMinInverseDistanceDirichletBC(const InputParameters & parameters);
 
 protected:
+  virtual Real computeQpResidual() override;
 
-  virtual Real computeValue();
-
+  /// The value for this BC
+  const Real & _first_ref_point_x;
+  const Real & _first_ref_point_y;
+  const Real & _first_ref_point_z;
+  const Real & _second_ref_point_x;
+  const Real & _second_ref_point_y;
+  const Real & _second_ref_point_z;
+  const Real & _G0;
 };
 
-#endif //LENGTHSCALEAUX_H
+#endif /* TWOPOINTSMININVERSEDISTANCEDIRICHLETBC_H */

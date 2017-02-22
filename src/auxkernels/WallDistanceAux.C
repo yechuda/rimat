@@ -12,27 +12,35 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LENGTHSCALEAUX_H
-#define LENGTHSCALEAUX_H
-
-#include "AuxKernel.h"
-
-class LengthScaleAux;
+#include "WallDistanceAux.h"
 
 template<>
-InputParameters validParams<LengthScaleAux>();
-
-class LengthScaleAux : public AuxKernel
+InputParameters validParams<WallDistanceAux>()
 {
-public:
-  LengthScaleAux(const InputParameters & parameters);
+  InputParameters params = validParams<AuxKernel>();
 
-  virtual ~LengthScaleAux() {}
+  // Coupled variables
+  params.addRequiredCoupledVar("G", "inverse wall distance");
 
-protected:
+  // Required parameters
+  params.addRequiredParam<Real>("G0", "inverse offset distance");
 
-  virtual Real computeValue();
+  return params;
+}
 
-};
+WallDistanceAux::WallDistanceAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
 
-#endif //LENGTHSCALEAUX_H
+    // Coupled variables
+    _G(coupledValue("G")),
+
+    // Required parameters
+    _G0(getParam<Real>("G0"))
+
+{
+}
+
+Real WallDistanceAux::computeValue()
+{
+  return (1.0 / _G[_qp]) - (1.0 / _G0);
+}
