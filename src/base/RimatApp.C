@@ -34,6 +34,8 @@
 #include "WallDistanceAux.h"
 #include "InverseWallDistanceRZ.h"
 #include "InverseWallDistanceGrad.h"
+#include "SpalartAllmaras.h"
+#include "SpalartAllmarasAux.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -107,6 +109,8 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(WallDistanceAux);
   registerKernel(InverseWallDistanceRZ);
   registerKernel(InverseWallDistanceGrad);
+  registerKernel(SpalartAllmaras);
+  registerAux(SpalartAllmarasAux);
 
 }
 
