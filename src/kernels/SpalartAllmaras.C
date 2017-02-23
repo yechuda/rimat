@@ -67,9 +67,13 @@ Real SpalartAllmaras::computeQpResidual()
 
   Real ft2 = ct3 * std::exp(-ct4 * std::pow(chi, 2.0));
 
-  Real doubleWijWij = (_grad_u_vel[_qp](1) - _grad_v_vel[_qp](0)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) +
-                      (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_w_vel[_qp](0) - _grad_u_vel[_qp](2)) +
-                      (_grad_v_vel[_qp](2) - _grad_w_vel[_qp](1)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2));
+  // Real doubleWijWij = (_grad_u_vel[_qp](1) - _grad_v_vel[_qp](0)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) +
+  //                     (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_w_vel[_qp](0) - _grad_u_vel[_qp](2)) +
+  //                     (_grad_v_vel[_qp](2) - _grad_w_vel[_qp](1)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2));
+
+  Real doubleWijWij = (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2)) +
+                      (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) +
+                      (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1));
 
   Real Omega = std::pow(doubleWijWij, 0.5);
 
@@ -77,7 +81,16 @@ Real SpalartAllmaras::computeQpResidual()
   Real fnu1 = std::pow(chi, 3.0) / (std::pow(chi, 3.0) + std::pow(cnu1, 3.0));
   Real fnu2 = 1.0 - (chi / (1.0 + chi * fnu1));
   Real kappa = 0.41;
-  Real S_tilde = Omega + ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+
+  Real S_bar = ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+  Real c2 = 0.7;
+  Real c3 = 0.9;
+  Real S_tilde;
+  if (S_bar >= -c2 * Omega)
+    S_tilde = Omega + S_bar;
+  else
+    S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+
   Real cb1 = 0.1355;
   Real A = cb1 * (1.0 - ft2) * S_tilde;
 
@@ -122,9 +135,13 @@ Real SpalartAllmaras::computeQpJacobian()
 
   Real ft2 = ct3 * std::exp(-ct4 * std::pow(chi, 2.0));
 
-  Real doubleWijWij = (_grad_u_vel[_qp](1) - _grad_v_vel[_qp](0)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) +
-                      (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_w_vel[_qp](0) - _grad_u_vel[_qp](2)) +
-                      (_grad_v_vel[_qp](2) - _grad_w_vel[_qp](1)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2));
+  // Real doubleWijWij = (_grad_u_vel[_qp](1) - _grad_v_vel[_qp](0)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) +
+  //                     (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_w_vel[_qp](0) - _grad_u_vel[_qp](2)) +
+  //                     (_grad_v_vel[_qp](2) - _grad_w_vel[_qp](1)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2));
+
+  Real doubleWijWij = (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2)) * (_grad_w_vel[_qp](1) - _grad_v_vel[_qp](2)) +
+                      (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) * (_grad_u_vel[_qp](2) - _grad_w_vel[_qp](0)) +
+                      (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1)) * (_grad_v_vel[_qp](0) - _grad_u_vel[_qp](1));
 
   Real Omega = std::pow(doubleWijWij, 0.5);
 
@@ -132,7 +149,16 @@ Real SpalartAllmaras::computeQpJacobian()
   Real fnu1 = std::pow(chi, 3.0) / (std::pow(chi, 3.0) + std::pow(cnu1, 3.0));
   Real fnu2 = 1.0 - (chi / (1.0 + chi * fnu1));
   Real kappa = 0.41;
-  Real S_tilde = Omega + ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+
+  Real S_bar = ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+  Real c2 = 0.7;
+  Real c3 = 0.9;
+  Real S_tilde;
+  if (S_bar >= -c2 * Omega)
+    S_tilde = Omega + S_bar;
+  else
+    S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+
   Real cb1 = 0.1355;
   Real A = cb1 * (1.0 - ft2) * S_tilde;
 
