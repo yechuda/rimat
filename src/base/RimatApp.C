@@ -36,6 +36,12 @@
 #include "InverseWallDistanceGrad.h"
 #include "SpalartAllmaras.h"
 #include "SpalartAllmarasAux.h"
+#include "SpalartAllmarasBF.h"
+#include "SpalartAllmarasBFNonOld.h"
+#include "BodyForceVorticityMagnitudeAux.h"
+#include "BodyForceComponent.h"
+#include "BodyForceBC.h"
+#include "SpalartAllmarasNoBCBC.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -111,6 +117,12 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(InverseWallDistanceGrad);
   registerKernel(SpalartAllmaras);
   registerAux(SpalartAllmarasAux);
+  registerKernel(SpalartAllmarasBF);
+  registerKernel(SpalartAllmarasBFNonOld);
+  registerAux(BodyForceVorticityMagnitudeAux);
+  registerKernel(BodyForceComponent);
+  registerBoundaryCondition(BodyForceBC);
+  registerBoundaryCondition(SpalartAllmarasNoBCBC);
 
 }
 
