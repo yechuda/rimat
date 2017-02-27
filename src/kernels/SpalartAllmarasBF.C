@@ -91,9 +91,11 @@ Real SpalartAllmarasBF::computeQpResidual()
   Real c3 = 0.9;
   Real S_tilde;
   if (S_bar >= -c2 * Omega)
-    S_tilde = Omega + S_bar;
+    // S_tilde = Omega + S_bar;
+    S_tilde = _Ce * std::pow(_body_force_vorticity_mag[_qp] / _rho, 0.5) + Omega + S_bar;
   else
-    S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+    // S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+    S_tilde = _Ce * std::pow(_body_force_vorticity_mag[_qp] / _rho, 0.5) + Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
 
   Real cb1 = 0.1355;
   Real A = cb1 * (1.0 - ft2) * S_tilde;
@@ -122,9 +124,10 @@ Real SpalartAllmarasBF::computeQpResidual()
   // Real BF_mag_squared = std::pow(_body_force_x[_qp], 2.0) + std::pow(_body_force_y[_qp], 2.0) + std::pow(_body_force_z[_qp], 2.0);
   // Real BF_mag = std::pow(BF_mag_squared, 0.5);
 
-  Real seventh_part = -_Ce * _body_force_vorticity_mag[_qp] * std::pow(_d[_qp], 2.0) / _rho * _test[_i][_qp];
+  // Real seventh_part = -_Ce * _body_force_vorticity_mag[_qp] * std::pow(_d[_qp], 2.0) / _rho * _test[_i][_qp];
 
-  return first_part + second_part + third_part + fourth_part + fifth_part + sixth_part + seventh_part;
+  // return first_part + second_part + third_part + fourth_part + fifth_part + sixth_part + seventh_part;
+  return first_part + second_part + third_part + fourth_part + fifth_part + sixth_part;
 }
 
 
@@ -163,9 +166,11 @@ Real SpalartAllmarasBF::computeQpJacobian()
   Real c3 = 0.9;
   Real S_tilde;
   if (S_bar >= -c2 * Omega)
-    S_tilde = Omega + S_bar;
+    // S_tilde = Omega + S_bar;
+    S_tilde = _Ce * std::pow(_body_force_vorticity_mag[_qp] / _rho, 0.5) + Omega + S_bar;
   else
-    S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+    // S_tilde = Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
+    S_tilde = _Ce * std::pow(_body_force_vorticity_mag[_qp] / _rho, 0.5) + Omega + ((Omega * (Omega * std::pow(c2, 2.0) + c3 * S_bar)) / (Omega * (c3 - 2.0 * c2) - S_bar));
 
   Real cb1 = 0.1355;
   Real A = cb1 * (1.0 - ft2) * S_tilde;
