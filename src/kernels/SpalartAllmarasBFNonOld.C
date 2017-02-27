@@ -23,7 +23,6 @@ InputParameters validParams<SpalartAllmarasBFNonOld>()
   params.addRequiredParam<Real>("rho", "density");
   params.addRequiredParam<Real>("mu_mol", "molecular dynamic viscosiyty");
   params.addRequiredParam<Real>("Ce", "coefficient for turbulence production due to electric body force");
-  params.addRequiredParam<Real>("init_val", "initial value");
 
   return params;
 }
@@ -51,7 +50,7 @@ SpalartAllmarasBFNonOld::SpalartAllmarasBFNonOld(const InputParameters & paramet
   _Ce(getParam<Real>("Ce")),
 
   // Old value
-  _nu_tilde(getParam<Real>("init_val"))
+  _nu_tilde(valueOld())
 
 {
 }
@@ -65,7 +64,7 @@ Real SpalartAllmarasBFNonOld::computeQpResidual()
   Real first_part = U * _grad_u[_qp] * _test[_i][_qp];
 
   Real nu_mol = _mu_mol / _rho;
-  Real chi = _nu_tilde / nu_mol;
+  Real chi = _nu_tilde[_qp] / nu_mol;
 
   Real ct3 = 1.2;
   Real ct4 = 0.5;
@@ -87,7 +86,7 @@ Real SpalartAllmarasBFNonOld::computeQpResidual()
   Real fnu2 = 1.0 - (chi / (1.0 + chi * fnu1));
   Real kappa = 0.41;
 
-  Real S_bar = ((_nu_tilde * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+  Real S_bar = ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
   Real c2 = 0.7;
   Real c3 = 0.9;
   Real S_tilde;
@@ -101,7 +100,7 @@ Real SpalartAllmarasBFNonOld::computeQpResidual()
 
   Real second_part = -A * _u[_qp] * _test[_i][_qp];
 
-  Real r = std::min(_nu_tilde / (S_tilde * std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)), 10.0);
+  Real r = std::min(_nu_tilde[_qp] / (S_tilde * std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)), 10.0);
   Real cw2 = 0.3;
   Real g = r + cw2 * (std::pow(r, 6.0) - r);
   Real cw3 = 2.0;
@@ -123,7 +122,9 @@ Real SpalartAllmarasBFNonOld::computeQpResidual()
   // Real BF_mag_squared = std::pow(_body_force_x[_qp], 2.0) + std::pow(_body_force_y[_qp], 2.0) + std::pow(_body_force_z[_qp], 2.0);
   // Real BF_mag = std::pow(BF_mag_squared, 0.5);
 
-  Real seventh_part = -_Ce * _body_force_vorticity_mag[_qp] * std::pow(_d[_qp], 2.0) / _rho * _test[_i][_qp];
+  // Real seventh_part = -_Ce * _body_force_vorticity_mag[_qp] * std::pow(_d[_qp], 2.0) / _rho * _test[_i][_qp];
+
+  Real seventh_part = -_Ce * _body_force_vorticity_mag[_qp] / _rho * _test[_i][_qp];
 
   return first_part + second_part + third_part + fourth_part + fifth_part + sixth_part + seventh_part;
 }
@@ -137,7 +138,7 @@ Real SpalartAllmarasBFNonOld::computeQpJacobian()
   Real first_part = U * _grad_phi[_j][_qp] * _test[_i][_qp];
 
   Real nu_mol = _mu_mol / _rho;
-  Real chi = _nu_tilde / nu_mol;
+  Real chi = _nu_tilde[_qp] / nu_mol;
 
   Real ct3 = 1.2;
   Real ct4 = 0.5;
@@ -159,7 +160,7 @@ Real SpalartAllmarasBFNonOld::computeQpJacobian()
   Real fnu2 = 1.0 - (chi / (1.0 + chi * fnu1));
   Real kappa = 0.41;
 
-  Real S_bar = ((_nu_tilde * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
+  Real S_bar = ((_nu_tilde[_qp] * fnu2) / (std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)));
   Real c2 = 0.7;
   Real c3 = 0.9;
   Real S_tilde;
@@ -173,7 +174,7 @@ Real SpalartAllmarasBFNonOld::computeQpJacobian()
 
   Real second_part = -A * _phi[_j][_qp] * _test[_i][_qp];
 
-  Real r = std::min(_nu_tilde / (S_tilde * std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)), 10.0);
+  Real r = std::min(_nu_tilde[_qp] / (S_tilde * std::pow(kappa, 2.0) * std::pow(_d[_qp], 2.0)), 10.0);
   Real cw2 = 0.3;
   Real g = r + cw2 * (std::pow(r, 6.0) - r);
   Real cw3 = 2.0;

@@ -42,6 +42,7 @@
 #include "BodyForceComponent.h"
 #include "BodyForceBC.h"
 #include "SpalartAllmarasNoBCBC.h"
+#include "TimeRampAux.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -123,6 +124,7 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(BodyForceComponent);
   registerBoundaryCondition(BodyForceBC);
   registerBoundaryCondition(SpalartAllmarasNoBCBC);
+  registerAux(TimeRampAux);
 
 }
 

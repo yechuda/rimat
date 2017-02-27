@@ -44,7 +44,7 @@ protected:
   Real _Ce;
 
   // Old value
-  Real _nu_tilde;
+  const VariableValue & _nu_tilde;
 };
 
 #endif
