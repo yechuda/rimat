@@ -44,6 +44,8 @@
 #include "SpalartAllmarasNoBCBC.h"
 #include "TimeRampAux.h"
 #include "ApparentDynamicViscosityProductionAux.h"
+#include "NeeKovasznay.h"
+#include "NeeKovasznayNoBCBC.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -127,6 +129,8 @@ RimatApp::registerObjects(Factory & factory)
   registerBoundaryCondition(SpalartAllmarasNoBCBC);
   registerAux(TimeRampAux);
   registerAux(ApparentDynamicViscosityProductionAux);
+  registerKernel(NeeKovasznay);
+  registerBoundaryCondition(NeeKovasznayNoBCBC);
 
 }
 
