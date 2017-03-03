@@ -46,6 +46,7 @@
 #include "ApparentDynamicViscosityProductionAux.h"
 #include "NeeKovasznay.h"
 #include "NeeKovasznayNoBCBC.h"
+#include "NeeKovasznayProductionEHD.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -131,6 +132,7 @@ RimatApp::registerObjects(Factory & factory)
   registerAux(ApparentDynamicViscosityProductionAux);
   registerKernel(NeeKovasznay);
   registerBoundaryCondition(NeeKovasznayNoBCBC);
+  registerKernel(NeeKovasznayProductionEHD);
 
 }
 

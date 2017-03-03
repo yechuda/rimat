@@ -47,6 +47,7 @@ NeeKovasznay::NeeKovasznay(const InputParameters & parameters) :
   _u_vel_var_number(coupled("u")),
   _v_vel_var_number(coupled("v")),
   _w_vel_var_number(coupled("w")),
+  _d_var_number(coupled("d")),
 
   // Required parameters
   _rho(getParam<Real>("rho")),
@@ -133,8 +134,8 @@ Real NeeKovasznay::computeQpOffDiagJacobian(unsigned jvar)
     Real S = std::pow(S_squared, 0.5);
     Real nu_mol = _mu_mol / _rho;
     RealVectorValue grad_U_column(_grad_u_vel[_qp](1), _grad_v_vel[_qp](1), _grad_w_vel[_qp](1));
-    Real dS_duj = ((_grad_v_vel[_qp] - grad_U_column) / S) * _grad_phi[_j][_qp];
-    Real production_part = -_A * (_u[_qp] - nu_mol) * dS_duj * _test[_i][_qp];
+    Real dS_dvj = ((_grad_v_vel[_qp] - grad_U_column) / S) * _grad_phi[_j][_qp];
+    Real production_part = -_A * (_u[_qp] - nu_mol) * dS_dvj * _test[_i][_qp];
 
     return convection_part + production_part;
   }
@@ -149,10 +150,19 @@ Real NeeKovasznay::computeQpOffDiagJacobian(unsigned jvar)
     Real S = std::pow(S_squared, 0.5);
     Real nu_mol = _mu_mol / _rho;
     RealVectorValue grad_U_column(_grad_u_vel[_qp](2), _grad_v_vel[_qp](2), _grad_w_vel[_qp](2));
-    Real dS_duj = ((_grad_w_vel[_qp] - grad_U_column) / S) * _grad_phi[_j][_qp];
-    Real production_part = -_A * (_u[_qp] - nu_mol) * dS_duj * _test[_i][_qp];
+    Real dS_dwj = ((_grad_w_vel[_qp] - grad_U_column) / S) * _grad_phi[_j][_qp];
+    Real production_part = -_A * (_u[_qp] - nu_mol) * dS_dwj * _test[_i][_qp];
 
     return convection_part + production_part;
+  }
+
+  else if (jvar == _d_var_number)
+  {
+    // destruction part
+    Real nu_mol = _mu_mol / _rho;
+    Real destruction_part = -2.0 * _B / std::pow(_d[_qp], 3.0) * _phi[_j][_qp] * _u[_qp] * (_u[_qp] - nu_mol) * _test[_i][_qp];
+
+    return destruction_part;
   }
 
   else

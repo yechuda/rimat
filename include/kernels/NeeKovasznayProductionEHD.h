@@ -4,51 +4,43 @@
 /*          All contents are licensed under LGPL V2.1           */
 /*             See LICENSE for full restrictions                */
 /****************************************************************/
-#ifndef NEEKOVASZNAY_H
-#define NEEKOVASZNAY_H
+#ifndef NEEKOVASZNAYPRODUCTIONEHD_H
+#define NEEKOVASZNAYPRODUCTIONEHD_H
 
 #include "Kernel.h"
 
 // Forward Declarations
-class NeeKovasznay;
+class NeeKovasznayProductionEHD;
 
 template<>
-InputParameters validParams<NeeKovasznay>();
+InputParameters validParams<NeeKovasznayProductionEHD>();
 
-class NeeKovasznay : public Kernel
+class NeeKovasznayProductionEHD : public Kernel
 {
 public:
-  NeeKovasznay(const InputParameters & parameters);
+  NeeKovasznayProductionEHD(const InputParameters & parameters);
 
-  virtual ~NeeKovasznay(){}
+  virtual ~NeeKovasznayProductionEHD(){}
 
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned jvar);
 
-  // Coupled variables
-  const VariableValue & _u_vel;
-  const VariableValue & _v_vel;
-  const VariableValue & _w_vel;
-  const VariableValue & _d;
-
   // Coupled gradients
-  const VariableGradient & _grad_u_vel;
-  const VariableGradient & _grad_v_vel;
-  const VariableGradient & _grad_w_vel;
+  const VariableGradient & _grad_body_force_x;
+  const VariableGradient & _grad_body_force_y;
+  const VariableGradient & _grad_body_force_z;
 
   // Variable numberings
-  unsigned _u_vel_var_number;
-  unsigned _v_vel_var_number;
-  unsigned _w_vel_var_number;
-  unsigned _d_var_number;
+  unsigned _body_force_x_var;
+  unsigned _body_force_y_var;
+  unsigned _body_force_z_var;
 
   // Required parameters
   Real _rho;
   Real _mu_mol;
-  Real _A;
-  Real _B;
+  Real _C;
 };
 
 #endif

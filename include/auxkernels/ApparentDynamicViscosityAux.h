@@ -34,14 +34,10 @@ protected:
   virtual Real computeValue();
 
   // Coupled variables
-  const VariableGradient & _grad_u_old;
-  const VariableGradient & _grad_v_old;
-  const VariableGradient & _grad_w_old;
+  const VariableValue & _nu;
 
   // Required parameters
-  Real _mu_mol;
   Real _rho;
-  Real _Cs;
 };
 
 #endif //APPARENTDYNAMICVISCOSITYAUX_H
