@@ -47,6 +47,7 @@
 #include "NeeKovasznay.h"
 #include "NeeKovasznayNoBCBC.h"
 #include "NeeKovasznayProductionEHD.h"
+#include "NeeKovasznayWALE.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -133,6 +134,7 @@ RimatApp::registerObjects(Factory & factory)
   registerKernel(NeeKovasznay);
   registerBoundaryCondition(NeeKovasznayNoBCBC);
   registerKernel(NeeKovasznayProductionEHD);
+  registerKernel(NeeKovasznayWALE);
 
 }
 
