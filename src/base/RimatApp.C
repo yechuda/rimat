@@ -48,6 +48,14 @@
 #include "NeeKovasznayNoBCBC.h"
 #include "NeeKovasznayProductionEHD.h"
 #include "NeeKovasznayWALE.h"
+#include "NeeKovasznayProductionEHDSimple.h"
+#include "VorticitySourceAux.h"
+#include "SourceWALEAux.h"
+#include "NeeKovasznayProductionEHDWALE.h"
+#include "INSMomentumTractionFormRANS.h"
+#include "INSMomentumTractionFormRANSRZ.h"
+#include "BodyForceComponentAux.h"
+#include "NeeKovasznayRZ.h"
 
 template<>
 InputParameters validParams<RimatApp>()
@@ -135,6 +143,14 @@ RimatApp::registerObjects(Factory & factory)
   registerBoundaryCondition(NeeKovasznayNoBCBC);
   registerKernel(NeeKovasznayProductionEHD);
   registerKernel(NeeKovasznayWALE);
+  registerKernel(NeeKovasznayProductionEHDSimple);
+  registerAux(VorticitySourceAux);
+  registerAux(SourceWALEAux);
+  registerKernel(NeeKovasznayProductionEHDWALE);
+  registerKernel(INSMomentumTractionFormRANS);
+  registerKernel(INSMomentumTractionFormRANSRZ);
+  registerAux(BodyForceComponentAux);
+  registerKernel(NeeKovasznayRZ);
 
 }
 
